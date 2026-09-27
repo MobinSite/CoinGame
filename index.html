@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Classic Coin</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  min-height:100%;
+  font-family:Tahoma,Arial,sans-serif;
+  color:#fff;
+}
+
+body{
+  min-height:100vh;
+  background:#111;
+  transition:background 1.5s ease;
+  overflow-x:hidden;
+}
+
+button,
+input{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:rgba(10,10,10,.9);
+  backdrop-filter:blur(15px);
+  border-bottom:1px solid #333;
+}
+
+.header-inner{
+  max-width:1250px;
+  margin:auto;
+  padding:12px 15px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+
+.logo{
+  font-size:24px;
+  font-weight:bold;
+}
+
+.logo span{
+  color:#777;
+}
+
+nav{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:7px;
+}
+
+nav button{
+  color:#ddd;
+  background:#191919;
+  border:1px solid #3b3b3b;
+  border-radius:10px;
+  padding:9px 12px;
+  transition:.2s;
+}
+
+nav button:hover{
+  background:#303030;
+  transform:translateY(-2px);
+}
+
+nav button.active{
+  background:#444;
+  border-color:#777;
+}
+
+.logout{
+  border-color:#6d2929!important;
+  color:#ff9999!important;
+}
+
+/* =========================
+   MAIN
+========================= */
+
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:25px 15px 60px;
+}
+
+.page{
+  display:none;
+  animation:pageIn .3s ease;
+}
+
+.page.active{
+  display:block;
+}
+
+@keyframes pageIn{
+  from{
+    opacity:0;
+    transform:translateY(10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* =========================
+   TITLES
+========================= */
+
+.section-title{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.section-sticker{
+  display:block;
+  font-size:60px;
+  margin-bottom:8px;
+  animation:floatSticker 2s ease-in-out infinite;
+}
+
+@keyframes floatSticker{
+  0%,100%{
+    transform:translateY(0) rotate(-3deg);
+  }
+  50%{
+    transform:translateY(-8px) rotate(3deg);
+  }
+}
+
+.section-title h1{
+  margin:0;
+  font-size:32px;
+}
+
+.section-title p{
+  color:#aaa;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card{
+  background:rgba(20,20,20,.9);
+  border:1px solid #373737;
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+  gap:14px;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn{
+  background:#252525;
+  color:#fff;
+  border:1px solid #555;
+  border-radius:11px;
+  padding:12px 17px;
+  transition:.2s;
+}
+
+.btn:hover{
+  background:#383838;
+  transform:translateY(-1px);
+}
+
+.btn:active{
+  transform:scale(.97);
+}
+
+.btn-full{
+  width:100%;
+  margin-top:15px;
+}
+
+.btn-danger{
+  background:#281313;
+  border-color:#703030;
+}
+
+.btn-success{
+  background:#142514;
+  border-color:#3c6d3c;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+label{
+  display:block;
+  margin:12px 0 6px;
+  color:#aaa;
+}
+
+input{
+  width:100%;
+  background:#0d0d0d;
+  border:1px solid #414141;
+  color:white;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+}
+
+input:focus{
+  border-color:#888;
+}
+
+/* =========================
+   AUTH
+========================= */
+
+#authPage{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+}
+
+.auth-box{
+  width:100%;
+  max-width:440px;
+  background:rgba(15,15,15,.96);
+  border:1px solid #444;
+  border-radius:22px;
+  padding:30px;
+  box-shadow:0 20px 70px rgba(0,0,0,.6);
+}
+
+.auth-logo{
+  text-align:center;
+  font-size:65px;
+}
+
+.auth-title{
+  text-align:center;
+  margin-top:5px;
+}
+
+.auth-tabs{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.auth-tabs button{
+  flex:1;
+}
+
+/* =========================
+   HOME
+========================= */
+
+.hero{
+  min-height:450px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.hero-sticker{
+  font-size:105px;
+  animation:floatSticker 2.5s infinite;
+}
+
+.hero h1{
+  font-size:50px;
+  margin:12px;
+}
+
+.hero p{
+  color:#aaa;
+  font-size:18px;
+}
+
+.info-row{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:15px;
+}
+
+.info-box{
+  text-align:center;
+  background:#181818;
+  border:1px solid #333;
+  border-radius:15px;
+  padding:20px;
+}
+
+.info-box .icon{
+  font-size:40px;
+}
+
+/* =========================
+   COINS
+========================= */
+
+.coin-card{
+  text-align:center;
+  background:#171717;
+  border:1px solid #333;
+  border-radius:16px;
+  padding:18px;
+}
+
+.coin-icon{
+  font-size:38px;
+}
+
+.coin-name{
+  color:#aaa;
+  margin-top:7px;
+}
+
+.coin-value{
+  font-size:25px;
+  font-weight:bold;
+  margin-top:6px;
+}
+
+/* =========================
+   GAME
+========================= */
+
+.game-area{
+  text-align:center;
+}
+
+.click-zone{
+  position:relative;
+  width:360px;
+  height:360px;
+  max-width:90vw;
+  max-height:90vw;
+  margin:20px auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.click-button{
+  width:270px;
+  height:270px;
+  max-width:70vw;
+  max-height:70vw;
+  border-radius:50%;
+  border:7px solid #4d4d4d;
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #777 0%,
+      #393939 35%,
+      #171717 70%,
+      #080808 100%
+    );
+  color:#fff;
+  font-size:32px;
+  font-weight:bold;
+  box-shadow:
+    0 0 0 10px rgba(255,255,255,.04),
+    0 20px 60px rgba(0,0,0,.7);
+  transition:.12s;
+  user-select:none;
+}
+
+.click-button:hover{
+  transform:scale(1.03);
+}
+
+.click-button:active{
+  transform:scale(.94);
+}
+
+.click-button.clicked{
+  animation:clickPulse .18s ease;
+}
+
+@keyframes clickPulse{
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(.91);
+  }
+  100%{
+    transform:scale(1);
+  }
+}
+
+.float-coin{
+  position:absolute;
+  pointer-events:none;
+  font-size:24px;
+  font-weight:bold;
+  animation:floatCoin 900ms ease-out forwards;
+}
+
+@keyframes floatCoin{
+  0%{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+  100%{
+    opacity:0;
+    transform:translateY(-120px) scale(1.5);
+  }
+}
+
+.game-stats{
+  display:flex;
+  justify-content:center;
+  gap:25px;
+  flex-wrap:wrap;
+  color:#aaa;
+}
+
+.game-stats b{
+  color:#fff;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-box{
+  text-align:center;
+}
+
+.profile-sticker{
+  font-size:85px;
+  animation:floatSticker 2s infinite;
+}
+
+.profile-name{
+  font-size:30px;
+  font-weight:bold;
+  margin-top:10px;
+}
+
+.profile-id{
+  color:#777;
+  font-size:12px;
+  word-break:break-all;
+}
+
+/* =========================
+   UPGRADE
+========================= */
+
+.upgrade-power{
+  text-align:center;
+  font-size:35px;
+  margin:15px;
+}
+
+.upgrade-desc{
+  text-align:center;
+  color:#aaa;
+}
+
+/* =========================
+   TRADE
+========================= */
+
+.trade-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:10px;
+}
+
+/* =========================
+   ADMIN
+========================= */
+
+.admin-badge{
+  display:inline-block;
+  background:#332900;
+  color:#ffd95a;
+  border:1px solid #705c00;
+  padding:7px 12px;
+  border-radius:10px;
+  margin-bottom:15px;
+}
+
+.owner-request{
+  background:#181818;
+  border:1px solid #333;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.request-buttons{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.request-buttons button{
+  flex:1;
+}
+
+/* =========================
+   LOGS
+========================= */
+
+.log-item{
+  background:#161616;
+  border:1px solid #333;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.log-title{
+  font-weight:bold;
+  font-size:18px;
+}
+
+.log-line{
+  color:#bbb;
+  margin-top:7px;
+}
+
+.log-date{
+  color:#777;
+  margin-top:7px;
+  font-size:13px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:25px;
+  transform:translateX(-50%);
+  z-index:99999;
+  min-width:260px;
+  max-width:90%;
+  padding:15px 20px;
+  border-radius:14px;
+  background:#222;
+  border:1px solid #555;
+  text-align:center;
+  box-shadow:0 15px 50px rgba(0,0,0,.5);
+  display:none;
+}
+
+#toast.show{
+  display:block;
+  animation:toastIn .25s ease;
+}
+
+@keyframes toastIn{
+  from{
+    opacity:0;
+    transform:translate(-50%,20px);
+  }
+  to{
+    opacity:1;
+    transform:translate(-50%,0);
+  }
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+  text-align:center;
+  color:#aaa;
+  padding:30px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:650px){
+
+  .hero h1{
+    font-size:36px;
+  }
+
+  .section-title h1{
+    font-size:27px;
+  }
+
+  .click-button{
+    width:230px;
+    height:230px;
+    font-size:27px;
+  }
+
+  .click-zone{
+    width:300px;
+    height:300px;
+  }
+
+  nav button{
+    padding:8px 9px;
+    font-size:12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     AUTH
+========================= -->
+
+<section id="authPage">
+
+  <div class="auth-box">
+
+    <div class="auth-logo">🪙</div>
+
+    <h1 class="auth-title">Classic Coin</h1>
+
+    <div class="auth-tabs">
+      <button
+        class="btn"
+        id="loginTab"
+        onclick="showAuthMode('login')">
+        ورود
+      </button>
+
+      <button
+        class="btn"
+        id="registerTab"
+        onclick="showAuthMode('register')">
+        ثبت نام
+      </button>
+    </div>
+
+    <div id="loginForm">
+
+      <label>ایمیل</label>
+
+      <input
+        id="loginEmail"
+        type="email"
+        placeholder="example@gmail.com"
+      >
+
+      <label>رمز عبور</label>
+
+      <input
+        id="loginPassword"
+        type="password"
+        placeholder="رمز عبور"
+      >
+
+      <button
+        class="btn btn-full"
+        onclick="loginUser()">
+        🔐 ورود
+      </button>
+
+    </div>
+
+    <div id="registerForm" class="hidden">
+
+      <label>ایمیل</label>
+
+      <input
+        id="registerEmail"
+        type="email"
+        placeholder="example@gmail.com"
+      >
+
+      <label>رمز عبور</label>
+
+      <input
+        id="registerPassword"
+        type="password"
+        placeholder="حداقل ۶ کاراکتر"
+      >
+
+      <button
+        class="btn btn-full"
+        onclick="registerUser()">
+        📝 ساخت حساب
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     APP
+========================= -->
+
+<div id="app" class="app hidden">
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="logo">
+      Classic <span>Coin</span> 🪙
+    </div>
+
+    <nav>
+
+      <button onclick="showPage('home')" data-page="home">
+        🏠 Home
+      </button>
+
+      <button onclick="showPage('game')" data-page="game">
+        🎮 Game
+      </button>
+
+      <button onclick="showPage('profile')" data-page="profile">
+        👤 Profile
+      </button>
+
+      <button onclick="showPage('upgrade')" data-page="upgrade">
+        ⬆️ Upgrade
+      </button>
+
+      <button onclick="showPage('trade')" data-page="trade">
+        🔄 Trade
+      </button>
+
+      <button onclick="showPage('owner')" data-page="owner">
+        👑 Owner
+      </button>
+
+      <button
+        id="adminNav"
+        class="hidden"
+        onclick="showPage('admin')"
+        data-page="admin">
+        🛠️ Admin
+      </button>
+
+      <button
+        class="logout"
+        onclick="logoutUser()">
+        🚪 Logout
+      </button>
+
+    </nav>
+
+  </div>
+
+</header>
+
+
+<main>
+
+<!-- =========================
+     HOME
+========================= -->
+
+<section id="page-home" class="page active">
+
+  <div class="hero">
+
+    <div
+      id="homeSticker"
+      class="hero-sticker">
+      🪙
+    </div>
+
+    <h1>Classic Coin</h1>
+
+    <p>
+      به دنیای Classic Coin خوش آمدی!
+    </p>
+
+    <button
+      class="btn"
+      onclick="showPage('game')">
+      🎮 شروع بازی
+    </button>
+
+  </div>
+
+  <div class="info-row">
+
+    <div class="info-box">
+      <div class="icon">🪙</div>
+      <h3>Collect</h3>
+      <p>کوین جمع کن</p>
+    </div>
+
+    <div class="info-box">
+      <div class="icon">⬆️</div>
+      <h3>Upgrade</h3>
+      <p>قدرت کلیک را بیشتر کن</p>
+    </div>
+
+    <div class="info-box">
+      <div class="icon">🔄</div>
+      <h3>Trade</h3>
+      <p>با بازیکنان معامله کن</p>
+    </div>
+
+    <div class="info-box">
+      <div class="icon">👑</div>
+      <h3>Owner</h3>
+      <p>درخواست Owner بده</p>
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     GAME
+========================= -->
+
+<section id="page-game" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="gameSticker"
+      class="section-sticker">
+      🎮
+    </span>
+
+    <h1>Game</h1>
+
+    <p>برای گرفتن Red Coin کلیک کن</p>
+
+  </div>
+
+  <div class="card game-area">
+
+    <div class="click-zone" id="clickZone">
+
+      <button
+        id="clickButton"
+        class="click-button"
+        onclick="gameClick()">
+        CLICK
+      </button>
+
+    </div>
+
+    <div class="game-stats">
+
+      <div>
+        Power:
+        <b id="powerValue">1</b>
+      </div>
+
+      <div>
+        Clicks:
+        <b id="clicksValue">0</b>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div
+    id="coinGrid"
+    class="grid">
+  </div>
+
+</section>
+
+
+<!-- =========================
+     PROFILE
+========================= -->
+
+<section id="page-profile" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="profileStickerTitle"
+      class="section-sticker">
+      👤
+    </span>
+
+    <h1>Profile</h1>
+
+    <p>پروفایل خودت را مدیریت کن</p>
+
+  </div>
+
+  <div class="card profile-box">
+
+    <div
+      id="profileSticker"
+      class="profile-sticker">
+      🪙
+    </div>
+
+    <div
+      id="profileName"
+      class="profile-name">
+      -
+    </div>
+
+    <div
+      id="profileId"
+      class="profile-id">
+      -
+    </div>
+
+    <label>نام کاربری</label>
+
+    <input
+      id="profileUsername"
+      placeholder="نام فارسی یا انگلیسی">
+
+    <label>استیکر</label>
+
+    <input
+      id="profileStickerInput"
+      placeholder="مثلاً 😎">
+
+    <button
+      class="btn btn-full"
+      onclick="saveProfile()">
+      💾 ذخیره پروفایل
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     UPGRADE
+========================= -->
+
+<section id="page-upgrade" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="upgradeSticker"
+      class="section-sticker">
+      ⚡
+    </span>
+
+    <h1>Upgrade</h1>
+
+    <p>قدرت کلیک خودت را افزایش بده</p>
+
+  </div>
+
+  <div class="card">
+
+    <div class="upgrade-power">
+      ⚡ Power:
+      <b id="upgradePower">1</b>
+    </div>
+
+    <p class="upgrade-desc">
+      هر Upgrade قدرت کلیک را ۱ واحد افزایش می‌دهد.
+    </p>
+
+    <p
+      id="upgradeCost"
+      class="upgrade-desc">
+      هزینه: 100 Red
+    </p>
+
+    <button
+      class="btn btn-full"
+      onclick="upgradeClick()">
+      ⬆️ Upgrade
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     TRADE
+========================= -->
+
+<section id="page-trade" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="tradeSticker"
+      class="section-sticker">
+      🔄
+    </span>
+
+    <h1>Trade</h1>
+
+    <p>کوین‌های خودت را با بازیکنان معامله کن</p>
+
+  </div>
+
+  <div class="card">
+
+    <label>نام کاربری گیرنده</label>
+
+    <input
+      id="tradeUsername"
+      placeholder="مثلاً OomidGamer">
+
+    <div class="trade-grid">
+
+      <div>
+        <label>🔴 Red</label>
+        <input id="tradeRed" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🟡 Yellow</label>
+        <input id="tradeYellow" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🟣 Void</label>
+        <input id="tradeVoid" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>⚫ Black</label>
+        <input id="tradeBlack" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🌑 Blackhole</label>
+        <input id="tradeBlackhole" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🔵 BlueHole</label>
+        <input id="tradeBluehole" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>➕ Plus</label>
+        <input id="tradePlus" type="number" min="0" value="0">
+      </div>
+
+    </div>
+
+    <button
+      class="btn btn-full"
+      onclick="tradeCoins()">
+      🔄 انجام Trade
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     OWNER
+========================= -->
+
+<section id="page-owner" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="ownerSticker"
+      class="section-sticker">
+      👑
+    </span>
+
+    <h1>Owner Request</h1>
+
+    <p>
+      برای درخواست Owner باید ۲ Void و ۱ Black داشته باشی.
+    </p>
+
+  </div>
+
+  <div class="card">
+
+    <h2>👑 درخواست Owner</h2>
+
+    <p>
+      هزینه:
+      <b>2 🟣 Void + 1 ⚫ Black</b>
+    </p>
+
+    <button
+      class="btn btn-full"
+      onclick="requestOwner()">
+      👑 ارسال درخواست
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     ADMIN
+========================= -->
+
+<section id="page-admin" class="page">
+
+  <div class="section-title">
+
+    <span
+      id="adminSticker"
+      class="section-sticker">
+      🛠️
+    </span>
+
+    <h1>Admin Panel</h1>
+
+    <p>مدیریت کاربران و درخواست‌ها</p>
+
+  </div>
+
+  <div class="card">
+
+    <div class="admin-badge">
+      👑 ADMIN ACCESS
+    </div>
+
+    <h2>🎁 Give Coins</h2>
+
+    <label>نام کاربری</label>
+
+    <input
+      id="adminUsername"
+      placeholder="نام کاربری">
+
+    <div class="trade-grid">
+
+      <div>
+        <label>🔴 Red</label>
+        <input id="adminRed" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🟡 Yellow</label>
+        <input id="adminYellow" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🟣 Void</label>
+        <input id="adminVoid" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>⚫ Black</label>
+        <input id="adminBlack" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🌑 Blackhole</label>
+        <input id="adminBlackhole" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>🔵 BlueHole</label>
+        <input id="adminBluehole" type="number" min="0" value="0">
+      </div>
+
+      <div>
+        <label>➕ Plus</label>
+        <input id="adminPlus" type="number" min="0" value="0">
+      </div>
+
+    </div>
+
+    <button
+      class="btn btn-success btn-full"
+      onclick="adminGiveCoins()">
+      🎁 دادن Coin
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>👑 Owner Requests</h2>
+
+    <div id="ownerRequests">
+      <div class="loading">
+        در حال دریافت...
+      </div>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <h2>📋 Logs</h2>
+
+    <p style="color:#888">
+      این قسمت فقط ثبت‌نام کاربران را نشان می‌دهد.
+    </p>
+
+    <div id="logsList">
+
+      <div class="loading">
+        در حال دریافت لاگ‌ها...
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+  "https://atmnupzceciwopmmpvty.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_Mw9GxTJcsKTdkxDTCU0BYw_aRgIuQpD";
+
+const supabaseClient =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================================
+   GLOBAL STATE
+========================================================= */
+
+let gameData = null;
+
+let currentUser = null;
+
+let clicking = false;
+
+let toastTimer = null;
+
+
+/* =========================================================
+   RANDOM STICKERS
+========================================================= */
+
+const stickerSets = {
+
+  home:[
+    "🪙","🎮","✨","💎","🚀",
+    "😎","🔥","👑","🐸","⭐"
+  ],
+
+  game:[
+    "🪙","💰","⚡","🔥","🎮",
+    "💎","🚀","🎯","👾","🤑"
+  ],
+
+  profile:[
+    "😎","😈","🤖","👑","🐸",
+    "🦊","🐼","🐱","🤑","🎮"
+  ],
+
+  upgrade:[
+    "⚡","🚀","🔥","💪","🧠",
+    "💎","🔧","🛠️","📈","☄️"
+  ],
+
+  trade:[
+    "🔄","🤝","💰","📦","💎",
+    "🪙","🤑","💵","📤","📥"
+  ],
+
+  owner:[
+    "👑","🏆","💎","🔥","⭐",
+    "🛡️","⚔️","👑","🚀","💰"
+  ],
+
+  admin:[
+    "🛠️","👑","🛡️","⚙️","🔥",
+    "💻","📊","🔐","⚡","🤖"
+  ]
+
+};
+
+
+function randomSticker(type){
+
+  const list = stickerSets[type] || ["🪙"];
+
+  return list[
+    Math.floor(
+      Math.random() * list.length
+    )
+  ];
+}
+
+
+function refreshPageSticker(page){
+
+  const ids = {
+
+    home:"homeSticker",
+    game:"gameSticker",
+    profile:"profileStickerTitle",
+    upgrade:"upgradeSticker",
+    trade:"tradeSticker",
+    owner:"ownerSticker",
+    admin:"adminSticker"
+
+  };
+
+  const id = ids[page];
+
+  if(!id) return;
+
+  const el =
+    document.getElementById(id);
+
+  if(el){
+
+    el.textContent =
+      randomSticker(page);
+
+  }
+
+}
+
+
+/* =========================================================
+   RGB BACKGROUND
+========================================================= */
+
+let bgHue = 0;
+
+function updateBackground(){
+
+  bgHue =
+    (bgHue + 47) % 360;
+
+  document.body.style.background =
+    `linear-gradient(
+      135deg,
+      hsl(${bgHue},55%,8%),
+      hsl(${(bgHue+70)%360},45%,12%),
+      hsl(${(bgHue+150)%360},50%,7%)
+    )`;
+}
+
+updateBackground();
+
+setInterval(
+  updateBackground,
+  12000
+);
+
+
+/* =========================================================
+   TOAST RGB
+========================================================= */
+
+let toastHue = 0;
+
+function animateToastBackground(){
+
+  toastHue =
+    (toastHue + 80) % 360;
+
+  const toast =
+    document.getElementById("toast");
+
+  if(toast){
+
+    toast.style.background =
+      `linear-gradient(
+        135deg,
+        hsl(${toastHue},65%,20%),
+        hsl(${(toastHue+90)%360},65%,18%)
+      )`;
+
+  }
+
+}
+
+setInterval(
+  animateToastBackground,
+  2000
+);
+
+
+/* =========================================================
+   FRIENDLY ERRORS
+========================================================= */
+
+function friendlyError(error){
+
+  const message =
+    String(
+      error?.message ||
+      error ||
+      ""
+    );
+
+  const code =
+    String(
+      error?.code ||
+      ""
+    );
+
+  const text =
+    (message + " " + code)
+      .toUpperCase();
+
+
+  if(
+    text.includes("NOT_ENOUGH_COINS") ||
+    text.includes("INSUFFICIENT")
+  ){
+    return "کوین کافی نداری 🪙";
+  }
+
+
+  if(
+    text.includes("USER_NOT_FOUND")
+  ){
+    return "کاربر پیدا نشد 👤";
+  }
+
+
+  if(
+    text.includes("SELF_TRADE")
+  ){
+    return "نمی‌توانی به خودت Trade بدهی.";
+  }
+
+
+  if(
+    text.includes("USERNAME_EXISTS") ||
+    text.includes("23505")
+  ){
+    return "این نام کاربری قبلاً ثبت شده است.";
+  }
+
+
+  if(
+    text.includes("OWNER_REQUEST_ALREADY_EXISTS")
+  ){
+    return "قبلاً درخواست Owner داده‌ای.";
+  }
+
+
+  if(
+    text.includes("NOT_ADMIN") ||
+    text.includes("42501")
+  ){
+    return "دسترسی Admin نداری.";
+  }
+
+
+  if(
+    text.includes("REQUEST_NOT_FOUND")
+  ){
+    return "درخواست پیدا نشد.";
+  }
+
+
+  if(
+    text.includes("INVALID_AMOUNT")
+  ){
+    return "مقدار واردشده معتبر نیست.";
+  }
+
+
+  if(
+    text.includes("INVALID_USERNAME")
+  ){
+    return "نام کاربری معتبر نیست.";
+  }
+
+
+  if(
+    text.includes("INVALID_LOGIN_CREDENTIALS")
+  ){
+    return "ایمیل یا رمز عبور اشتباه است.";
+  }
+
+
+  if(
+    text.includes("EMAIL_NOT_CONFIRMED")
+  ){
+    return "ایمیل حساب هنوز تأیید نشده است.";
+  }
+
+
+  if(
+    text.includes("NOT_AUTHENTICATED")
+  ){
+    return "ابتدا وارد حساب شو.";
+  }
+
+
+  if(
+    text.includes("PROFILE_NOT_FOUND")
+  ){
+    return "پروفایل پیدا نشد.";
+  }
+
+
+  if(
+    text.includes("FAILED TO FETCH")
+  ){
+    return "اتصال به سرور برقرار نشد.";
+  }
+
+
+  return "خطایی رخ داد. دوباره تلاش کن.";
+}
+
+
+function showError(error){
+
+  console.error(error);
+
+  showToast(
+    "❌ " + friendlyError(error)
+  );
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.classList.add("show");
+
+  animateToastBackground();
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    },3500);
+
+}
+
+
+/* =========================================================
+   AUTH MODE
+========================================================= */
+
+function showAuthMode(mode){
+
+  const login =
+    document.getElementById("loginForm");
+
+  const register =
+    document.getElementById("registerForm");
+
+  if(mode === "login"){
+
+    login.classList.remove("hidden");
+
+    register.classList.add("hidden");
+
+  }else{
+
+    login.classList.add("hidden");
+
+    register.classList.remove("hidden");
+
+  }
+
+}
+
+
+/* =========================================================
+   REGISTER AUTH
+========================================================= */
+
+async function registerUser(){
+
+  try{
+
+    const email =
+      document
+        .getElementById("registerEmail")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("registerPassword")
+        .value;
+
+
+    if(!email){
+
+      showToast("ایمیل را وارد کن.");
+
+      return;
+    }
+
+
+    if(password.length < 6){
+
+      showToast(
+        "رمز عبور باید حداقل ۶ کاراکتر باشد."
+      );
+
+      return;
+    }
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.signUp({
+
+        email,
+        password
+
+      });
+
+
+    if(error)
+      throw error;
+
+
+    if(data.session){
+
+      currentUser =
+        data.user;
+
+      showToast(
+        "حساب با موفقیت ساخته شد 🎉"
+      );
+
+      await setupNewProfile();
+
+    }else{
+
+      showToast(
+        "حساب ساخته شد. ایمیل خود را تأیید کن و سپس وارد شو."
+      );
+
+    }
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+async function loginUser(){
+
+  try{
+
+    const email =
+      document
+        .getElementById("loginEmail")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("loginPassword")
+        .value;
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.auth.signInWithPassword({
+
+        email,
+        password
+
+      });
+
+
+    if(error)
+      throw error;
+
+
+    currentUser =
+      data.user;
+
+
+    await afterLogin();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   AFTER LOGIN
+========================================================= */
+
+async function afterLogin(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_my_game_data"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    if(!data){
+
+      await setupNewProfile();
+
+      return;
+    }
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    if(!gameData?.username){
+
+      await setupNewProfile();
+
+      return;
+    }
+
+
+    await loadGameData();
+
+    openApp();
+
+  }catch(error){
+
+    console.error(error);
+
+    /*
+      اگر پروفایل هنوز ساخته نشده باشد
+      اجازه می‌دهیم کاربر آن را بسازد.
+    */
+
+    await setupNewProfile();
+
+  }
+
+}
+
+
+/* =========================================================
+   NEW PROFILE
+========================================================= */
+
+async function setupNewProfile(){
+
+  const username =
+    prompt(
+      "نام کاربری خود را وارد کنید:\nفارسی یا انگلیسی"
+    );
+
+
+  if(!username){
+
+    showToast(
+      "برای ادامه باید نام کاربری داشته باشی."
+    );
+
+    return;
+  }
+
+
+  const sticker =
+    prompt(
+      "یک استیکر وارد کن، مثلاً 😎",
+      "🪙"
+    ) || "🪙";
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "register_profile",
+        {
+          p_username:username,
+          p_sticker:sticker
+        }
+      );
+
+
+    if(error)
+      throw error;
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    showToast(
+      "پروفایل با موفقیت ساخته شد 🎉"
+    );
+
+
+    await loadGameData();
+
+    openApp();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   OPEN APP
+========================================================= */
+
+function openApp(){
+
+  document
+    .getElementById("authPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+
+  updateUI();
+
+  showPage("home");
+
+}
+
+
+/* =========================================================
+   LOAD GAME DATA
+========================================================= */
+
+async function loadGameData(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "get_my_game_data"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    /*
+      اگر RPC مقدار is_admin را برنگرداند،
+      جداگانه چک می‌کنیم.
+    */
+
+    if(!gameData)
+      return;
+
+
+    if(!gameData.is_admin){
+
+      try{
+
+        const {
+          data:adminData
+        } =
+          await supabaseClient.rpc(
+            "is_current_user_admin"
+          );
+
+
+        if(adminData === true){
+
+          gameData.is_admin = true;
+
+        }
+
+      }catch{}
+
+    }
+
+
+    updateUI();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   UPDATE UI
+========================================================= */
+
+function updateUI(){
+
+  if(!gameData)
+    return;
+
+
+  const coins = [
+
+    {
+      name:"Red Coin",
+      icon:"🔴",
+      value:gameData.red || 0
+    },
+
+    {
+      name:"Yellow Coin",
+      icon:"🟡",
+      value:gameData.yellow || 0
+    },
+
+    {
+      name:"Void Coin",
+      icon:"🟣",
+      value:gameData.void || 0
+    },
+
+    {
+      name:"Black Coin",
+      icon:"⚫",
+      value:gameData.black || 0
+    },
+
+    {
+      name:"Blackhole Coin",
+      icon:"🌑",
+      value:gameData.blackhole || 0
+    },
+
+    {
+      name:"BlueHole Coin",
+      icon:"🔵",
+      value:gameData.bluehole || 0
+    },
+
+    {
+      name:"++ Coin",
+      icon:"➕",
+      value:gameData.plus_coin || 0
+    }
+
+  ];
+
+
+  const grid =
+    document.getElementById("coinGrid");
+
+
+  grid.innerHTML =
+    coins.map(coin => `
+
+      <div class="coin-card">
+
+        <div class="coin-icon">
+          ${coin.icon}
+        </div>
+
+        <div class="coin-name">
+          ${coin.name}
+        </div>
+
+        <div class="coin-value">
+          ${Number(coin.value).toLocaleString()}
+        </div>
+
+      </div>
+
+    `).join("");
+
+
+  document.getElementById("powerValue")
+    .textContent =
+    gameData.click_power || 1;
+
+
+  document.getElementById("clicksValue")
+    .textContent =
+    gameData.clicks || 0;
+
+
+  document.getElementById("upgradePower")
+    .textContent =
+    gameData.click_power || 1;
+
+
+  const cost =
+    Number(gameData.click_power || 1) * 100;
+
+
+  document.getElementById("upgradeCost")
+    .textContent =
+    `هزینه: ${cost.toLocaleString()} Red`;
+
+
+  document.getElementById("profileName")
+    .textContent =
+    gameData.username || "-";
+
+
+  document.getElementById("profileSticker")
+    .textContent =
+    gameData.sticker || "🪙";
+
+
+  document.getElementById("profileStickerInput")
+    .value =
+    gameData.sticker || "🪙";
+
+
+  document.getElementById("profileUsername")
+    .value =
+    gameData.username || "";
+
+
+  document.getElementById("profileId")
+    .textContent =
+    currentUser?.id || gameData.id || "-";
+
+
+  const adminNav =
+    document.getElementById("adminNav");
+
+
+  if(gameData.is_admin === true){
+
+    adminNav.classList.remove("hidden");
+
+  }else{
+
+    adminNav.classList.add("hidden");
+
+  }
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function showPage(page){
+
+  document
+    .querySelectorAll(".page")
+    .forEach(p =>
+      p.classList.remove("active")
+    );
+
+
+  const target =
+    document.getElementById(
+      "page-" + page
+    );
+
+
+  if(!target)
+    return;
+
+
+  target.classList.add("active");
+
+
+  document
+    .querySelectorAll("nav button[data-page]")
+    .forEach(btn => {
+
+      btn.classList.toggle(
+        "active",
+        btn.dataset.page === page
+      );
+
+    });
+
+
+  refreshPageSticker(page);
+
+
+  if(page === "admin"){
+
+    if(gameData?.is_admin !== true){
+
+      showToast(
+        "دسترسی Admin نداری."
+      );
+
+      showPage("home");
+
+      return;
+    }
+
+
+    loadOwnerRequests();
+
+    loadAdminLogs();
+
+  }
+
+}
+
+
+/* =========================================================
+   GAME CLICK
+========================================================= */
+
+async function gameClick(){
+
+  if(clicking)
+    return;
+
+
+  clicking = true;
+
+
+  const button =
+    document.getElementById(
+      "clickButton"
+    );
+
+
+  button.classList.remove("clicked");
+
+  void button.offsetWidth;
+
+  button.classList.add("clicked");
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "game_click"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    updateUI();
+
+    createFloatingCoin();
+
+
+  }catch(error){
+
+    showError(error);
+
+  }finally{
+
+    setTimeout(
+      () => {
+        clicking = false;
+      },
+      100
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   FLOATING +RED
+========================================================= */
+
+function createFloatingCoin(){
+
+  const zone =
+    document.getElementById(
+      "clickZone"
+    );
+
+
+  const el =
+    document.createElement("div");
+
+
+  el.className =
+    "float-coin";
+
+
+  el.textContent =
+    "+" +
+    Number(
+      gameData?.click_power || 1
+    ) +
+    " 🔴";
+
+
+  const x =
+    Math.random() * 150 + 90;
+
+
+  const y =
+    Math.random() * 100 + 80;
+
+
+  el.style.left =
+    x + "px";
+
+
+  el.style.top =
+    y + "px";
+
+
+  zone.appendChild(el);
+
+
+  setTimeout(
+    () => el.remove(),
+    1000
+  );
+
+}
+
+
+/* =========================================================
+   UPGRADE
+========================================================= */
+
+async function upgradeClick(){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "upgrade_click"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    updateUI();
+
+    showToast(
+      "Upgrade با موفقیت انجام شد ⚡"
+    );
+
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function saveProfile(){
+
+  const username =
+    document
+      .getElementById(
+        "profileUsername"
+      )
+      .value
+      .trim();
+
+
+  const sticker =
+    document
+      .getElementById(
+        "profileStickerInput"
+      )
+      .value
+      .trim() ||
+    "🪙";
+
+
+  if(!username){
+
+    showToast(
+      "نام کاربری را وارد کن."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    /*
+      register_profile در SQL قبلی
+      پروفایل موجود را با اطلاعات جدید
+      Update می‌کند.
+    */
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "register_profile",
+        {
+          p_username:username,
+          p_sticker:sticker
+        }
+      );
+
+
+    if(error)
+      throw error;
+
+
+    gameData =
+      Array.isArray(data)
+        ? data[0]
+        : data;
+
+
+    await loadGameData();
+
+    updateUI();
+
+
+    showToast(
+      "پروفایل ذخیره شد 💾"
+    );
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   TRADE
+========================================================= */
+
+function numberValue(id){
+
+  const value =
+    Number(
+      document
+        .getElementById(id)
+        .value
+    );
+
+
+  if(!Number.isFinite(value))
+    return 0;
+
+
+  return Math.max(
+    0,
+    Math.floor(value)
+  );
+
+}
+
+
+async function tradeCoins(){
+
+  const username =
+    document
+      .getElementById(
+        "tradeUsername"
+      )
+      .value
+      .trim();
+
+
+  if(!username){
+
+    showToast(
+      "نام کاربری گیرنده را وارد کن."
+    );
+
+    return;
+  }
+
+
+  const coins = {
+
+    red:numberValue("tradeRed"),
+
+    yellow:numberValue("tradeYellow"),
+
+    void:numberValue("tradeVoid"),
+
+    black:numberValue("tradeBlack"),
+
+    blackhole:numberValue("tradeBlackhole"),
+
+    bluehole:numberValue("tradeBluehole"),
+
+    plus_coin:numberValue("tradePlus")
+
+  };
+
+
+  const total =
+    Object.values(coins)
+      .reduce(
+        (a,b) => a+b,
+        0
+      );
+
+
+  if(total <= 0){
+
+    showToast(
+      "حداقل یک Coin برای Trade انتخاب کن."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "trade_coins",
+        {
+          p_username:username,
+          p_coins:coins
+        }
+      );
+
+
+    if(error)
+      throw error;
+
+
+    showToast(
+      "Trade با موفقیت انجام شد 🔄"
+    );
+
+
+    await loadGameData();
+
+
+    [
+      "tradeRed",
+      "tradeYellow",
+      "tradeVoid",
+      "tradeBlack",
+      "tradeBlackhole",
+      "tradeBluehole",
+      "tradePlus"
+    ].forEach(id => {
+
+      document
+        .getElementById(id)
+        .value = 0;
+
+    });
+
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   OWNER REQUEST
+========================================================= */
+
+async function requestOwner(){
+
+  const ok =
+    confirm(
+      "برای Owner شدن ۲ Void و ۱ Black مصرف می‌شود.\n\nادامه می‌دهی؟"
+    );
+
+
+  if(!ok)
+    return;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "request_owner"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    showToast(
+      "درخواست Owner ارسال شد 👑"
+    );
+
+
+    await loadGameData();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN GIVE COINS
+========================================================= */
+
+async function adminGiveCoins(){
+
+  if(gameData?.is_admin !== true){
+
+    showToast(
+      "دسترسی Admin نداری."
+    );
+
+    return;
+  }
+
+
+  const username =
+    document
+      .getElementById(
+        "adminUsername"
+      )
+      .value
+      .trim();
+
+
+  if(!username){
+
+    showToast(
+      "نام کاربری را وارد کن."
+    );
+
+    return;
+  }
+
+
+  const coins = {
+
+    red:numberValue("adminRed"),
+
+    yellow:numberValue("adminYellow"),
+
+    void:numberValue("adminVoid"),
+
+    black:numberValue("adminBlack"),
+
+    blackhole:numberValue("adminBlackhole"),
+
+    bluehole:numberValue("adminBluehole"),
+
+    plus_coin:numberValue("adminPlus")
+
+  };
+
+
+  const total =
+    Object.values(coins)
+      .reduce(
+        (a,b) => a+b,
+        0
+      );
+
+
+  if(total <= 0){
+
+    showToast(
+      "مقدار Coin را وارد کن."
+    );
+
+    return;
+  }
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_give_coins",
+        {
+          p_username:username,
+          p_coins:coins
+        }
+      );
+
+
+    if(error)
+      throw error;
+
+
+    showToast(
+      "Coinها با موفقیت داده شدند 🎁"
+    );
+
+
+    [
+      "adminRed",
+      "adminYellow",
+      "adminVoid",
+      "adminBlack",
+      "adminBlackhole",
+      "adminBluehole",
+      "adminPlus"
+    ].forEach(id => {
+
+      document
+        .getElementById(id)
+        .value = 0;
+
+    });
+
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN OWNER REQUESTS
+========================================================= */
+
+async function loadOwnerRequests(){
+
+  const box =
+    document.getElementById(
+      "ownerRequests"
+    );
+
+
+  box.innerHTML =
+    `<div class="loading">
+      در حال دریافت...
+    </div>`;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_owner_requests"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    const requests =
+      Array.isArray(data)
+        ? data
+        : [];
+
+
+    const pending =
+      requests.filter(
+        r =>
+          String(r.status)
+            .toUpperCase() ===
+          "PENDING"
+      );
+
+
+    if(pending.length === 0){
+
+      box.innerHTML =
+        `<div style="color:#888">
+          درخواست Owner جدیدی وجود ندارد.
+        </div>`;
+
+      return;
+    }
+
+
+    box.innerHTML =
+      pending.map(r => `
+
+        <div class="owner-request">
+
+          <div>
+            👤
+            <b>
+              ${escapeHtml(r.username || "-")}
+            </b>
+          </div>
+
+          <div
+            style="color:#888;margin-top:7px">
+            🕒
+            ${formatDate(r.created_at)}
+          </div>
+
+          <div class="request-buttons">
+
+            <button
+              class="btn btn-success"
+              onclick="processOwnerRequest(${Number(r.id)},true)">
+              ✅ Accept
+            </button>
+
+            <button
+              class="btn btn-danger"
+              onclick="processOwnerRequest(${Number(r.id)},false)">
+              ❌ Reject
+            </button>
+
+          </div>
+
+        </div>
+
+      `).join("");
+
+
+  }catch(error){
+
+    showError(error);
+
+    box.innerHTML =
+      `<div style="color:#f77">
+        خطا در دریافت درخواست‌ها
+      </div>`;
+
+  }
+
+}
+
+
+/* =========================================================
+   PROCESS OWNER
+========================================================= */
+
+async function processOwnerRequest(
+  id,
+  accept
+){
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_process_owner_request",
+        {
+          p_request_id:id,
+          p_accept:accept
+        }
+      );
+
+
+    if(error)
+      throw error;
+
+
+    showToast(
+      accept
+        ? "درخواست Owner پذیرفته شد 👑"
+        : "درخواست Owner رد شد ❌"
+    );
+
+
+    await loadOwnerRequests();
+
+
+    await loadAdminLogs();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   ADMIN LOGS
+   ONLY REGISTER
+========================================================= */
+
+async function loadAdminLogs(){
+
+  const container =
+    document.getElementById(
+      "logsList"
+    );
+
+
+  container.innerHTML =
+    `<div class="loading">
+      در حال دریافت لاگ‌ها...
+    </div>`;
+
+
+  try{
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient.rpc(
+        "admin_get_logs"
+      );
+
+
+    if(error)
+      throw error;
+
+
+    const logs =
+      Array.isArray(data)
+        ? data
+        : [];
+
+
+    /*
+      فقط REGISTER
+      در صفحه نمایش داده می‌شود.
+    */
+
+    const registerLogs =
+      logs.filter(
+        log =>
+          String(log.action || "")
+            .toUpperCase() ===
+          "REGISTER"
+      );
+
+
+    if(registerLogs.length === 0){
+
+      container.innerHTML = `
+
+        <div
+          style="
+            text-align:center;
+            color:#777;
+            padding:25px">
+          هنوز ثبت‌نامی در لاگ وجود ندارد 📝
+        </div>
+
+      `;
+
+      return;
+    }
+
+
+    container.innerHTML =
+      registerLogs.map(log => {
+
+        let details = {};
+
+
+        try{
+
+          details =
+            typeof log.details === "string"
+              ? JSON.parse(log.details)
+              : (log.details || {});
+
+        }catch{
+
+          details = {};
+
+        }
+
+
+        const username =
+          details.username ||
+          log.username ||
+          "نامشخص";
+
+
+        const sticker =
+          details.sticker ||
+          "🪙";
+
+
+        const date =
+          formatDate(
+            log.created_at
+          );
+
+
+        return `
+
+          <div class="log-item">
+
+            <div class="log-title">
+              📝 ثبت نام جدید
+            </div>
+
+            <div class="log-line">
+              👤 نام کاربری:
+              <b>
+                ${escapeHtml(username)}
+              </b>
+            </div>
+
+            <div class="log-line">
+              🎨 استیکر:
+              ${escapeHtml(sticker)}
+            </div>
+
+            <div class="log-date">
+              🕒 ${escapeHtml(date)}
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+
+  }catch(error){
+
+    console.error(error);
+
+    container.innerHTML = `
+
+      <div
+        style="
+          text-align:center;
+          color:#ff7777;
+          padding:20px">
+        ❌ خطا در دریافت Logs
+      </div>
+
+    `;
+
+  }
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(date){
+
+  if(!date)
+    return "نامشخص";
+
+
+  try{
+
+    return new Date(date)
+      .toLocaleString(
+        "fa-IR",
+        {
+          dateStyle:"medium",
+          timeStyle:"short"
+        }
+      );
+
+  }catch{
+
+    return String(date);
+
+  }
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logoutUser(){
+
+  try{
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH SESSION
+========================================================= */
+
+async function checkSession(){
+
+  try{
+
+    const {
+      data
+    } =
+      await supabaseClient.auth.getSession();
+
+
+    if(data?.session){
+
+      currentUser =
+        data.session.user;
+
+
+      await afterLogin();
+
+    }else{
+
+      document
+        .getElementById("authPage")
+        .classList.remove("hidden");
+
+      document
+        .getElementById("app")
+        .classList.add("hidden");
+
+    }
+
+  }catch(error){
+
+    showError(error);
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH STATE CHANGE
+========================================================= */
+
+supabaseClient.auth.onAuthStateChange(
+  async (event,session) => {
+
+    if(session){
+
+      currentUser =
+        session.user;
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   START
+========================================================= */
+
+showAuthMode("login");
+
+checkSession();
+
+</script>
+
+</body>
+</html>
